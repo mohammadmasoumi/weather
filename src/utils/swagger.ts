@@ -4,6 +4,16 @@ import { Application, Request, Response } from "express";
 
 const PORT = process.env.PORT || 5000;
 
+/**
+ * @swagger
+ * components:
+ *   securitySchemes:
+ *     BearerAuth:
+ *       type: http
+ *       scheme: bearer
+ *       bearerFormat: JWT
+ */
+
 // Swagger definition options
 const swaggerOptions: Options = {
     definition: {
