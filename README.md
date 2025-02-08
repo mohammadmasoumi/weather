@@ -10,7 +10,7 @@ weather-api/
 │   ├── entities/
 │   │   ├── Weather.ts
 │   ├── middlewares/
-│   │   ├── errorHandler.ts
+│   │   ├── errorMiddleware.ts
 │   ├── routes/
 │   │   ├── weather.routes.ts
 │   ├── services/
