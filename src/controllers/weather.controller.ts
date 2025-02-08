@@ -1,4 +1,4 @@
-import { RequestHandler } from "express";
+import { Request, Response, NextFunction } from "express";
 import { WeatherService } from "../services/weather.service";
 import { CustomError } from "../utils/CustomError";
 import { Weather } from "../entities/Weather";
@@ -27,7 +27,7 @@ interface UpdateWeatherBody {
 }
 
 // ✅ Get all weather records
-export const getAllWeather: RequestHandler = async (req, res, next) => {
+export const getAllWeather = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const data: Weather[] = await weatherService.getWeather();
         res.status(200).json(data);
@@ -36,8 +36,12 @@ export const getAllWeather: RequestHandler = async (req, res, next) => {
     }
 };
 
-// ✅ Get weather by ID
-export const getWeatherById: RequestHandler<WeatherIdParams> = async (req, res, next) => {
+// ✅ Get weather by ID (Ensure Proper Typing for Request)
+export const getWeatherById = async (
+    req: Request<{ id: string }>,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
     try {
         const data = await weatherService.getWeatherById(req.params.id);
         if (!data) {
@@ -50,7 +54,11 @@ export const getWeatherById: RequestHandler<WeatherIdParams> = async (req, res, 
 };
 
 // ✅ Fetch new weather data
-export const fetchWeather: RequestHandler<{}, {}, FetchWeatherBody> = async (req, res, next) => {
+export const fetchWeather = async (
+    req: Request<{}, {}, FetchWeatherBody>,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
     try {
         const data = await weatherService.fetchWeather(req.body.cityName, req.body.country);
         res.status(201).json(data);
@@ -60,7 +68,11 @@ export const fetchWeather: RequestHandler<{}, {}, FetchWeatherBody> = async (req
 };
 
 // ✅ Update weather record
-export const updateWeather: RequestHandler<WeatherIdParams, {}, UpdateWeatherBody> = async (req, res, next) => {
+export const updateWeather = async (
+    req: Request<{ id: string }, {}, UpdateWeatherBody>,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
     try {
         const data = await weatherService.updateWeather(req.params.id, req.body);
         if (!data) {
@@ -73,7 +85,11 @@ export const updateWeather: RequestHandler<WeatherIdParams, {}, UpdateWeatherBod
 };
 
 // ✅ Delete weather record
-export const deleteWeather: RequestHandler<WeatherIdParams> = async (req, res, next) => {
+export const deleteWeather = async (
+    req: Request<{ id: string }>,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
     try {
         await weatherService.deleteWeather(req.params.id);
         res.status(200).json({ message: "Weather record deleted successfully" });
@@ -83,7 +99,11 @@ export const deleteWeather: RequestHandler<WeatherIdParams> = async (req, res, n
 };
 
 // ✅ Get latest weather for a city
-export const getLatestWeather: RequestHandler<WeatherCityParams> = async (req, res, next) => {
+export const getLatestWeather = async (
+    req: Request<{ cityName: string }>,
+    res: Response,
+    next: NextFunction
+): Promise<void> => {
     try {
         const data = await weatherService.getLatestWeather(req.params.cityName);
         if (!data) {
