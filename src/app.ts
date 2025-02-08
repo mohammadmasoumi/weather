@@ -10,6 +10,9 @@ const app: Application = express();
 // Middleware
 app.use(express.json()); // ✅ Enables JSON request body parsing
 
+// Swagger Docs
+setupSwagger(app);
+
 // ✅ Register API routes
 app.use("/api", weatherRoutes);
 app.use("/api", userRoutes);
@@ -20,7 +23,5 @@ app.use(notFoundHandler);
 // ✅ Global Error Handling Middleware
 app.use(errorHandler);
 
-// Swagger Docs
-setupSwagger(app);
 
 export default app;

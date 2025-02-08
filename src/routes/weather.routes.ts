@@ -13,9 +13,17 @@ const router = Router();
 
 /**
  * @swagger
+ * tags:
+ *   name: Weather
+ *   description: Weather data management
+ */
+
+/**
+ * @swagger
  * /api/weather:
  *   get:
  *     summary: Get all weather records
+ *     tags: [Weather]
  *     description: Retrieve all stored weather data
  *     responses:
  *       200:
@@ -29,21 +37,22 @@ const router = Router();
  *       500:
  *         description: Internal server error
  */
-router.get("/weather", getAllWeather); // Public
+router.get("/weather", getAllWeather);
 
 /**
  * @swagger
  * /api/weather/{id}:
  *   get:
  *     summary: Get weather record by ID
+ *     tags: [Weather]
  *     description: Retrieve weather data by a specific record ID
  *     parameters:
- *       - name: id
- *         in: path
+ *       - in: path
+ *         name: id
  *         required: true
- *         description: Weather record ID
  *         schema:
  *           type: string
+ *         description: Weather record ID
  *     security:
  *       - BearerAuth: []
  *     responses:
@@ -53,19 +62,22 @@ router.get("/weather", getAllWeather); // Public
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Weather'
+ *       401:
+ *         description: Unauthorized
  *       404:
  *         description: Weather record not found
  *       500:
  *         description: Internal server error
  */
-router.get("/weather/:id", authenticateToken, getWeatherById); // Protected
+router.get("/weather/:id", authenticateToken, getWeatherById);
 
 /**
  * @swagger
  * /api/weather:
  *   post:
  *     summary: Fetch and store new weather data
- *     description: Fetches the latest weather data for a city from OpenWeather API and stores it in the database
+ *     tags: [Weather]
+ *     description: Fetches the latest weather data for a city from OpenWeather API and stores it
  *     security:
  *       - BearerAuth: []
  *     requestBody:
@@ -74,6 +86,8 @@ router.get("/weather/:id", authenticateToken, getWeatherById); // Protected
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - cityName
  *             properties:
  *               cityName:
  *                 type: string
@@ -90,26 +104,29 @@ router.get("/weather/:id", authenticateToken, getWeatherById); // Protected
  *               $ref: '#/components/schemas/Weather'
  *       400:
  *         description: Invalid request body
+ *       401:
+ *         description: Unauthorized
  *       500:
  *         description: Internal server error
  */
-router.post("/weather", authenticateToken, fetchWeather); // Protected
+router.post("/weather", authenticateToken, fetchWeather);
 
 /**
  * @swagger
  * /api/weather/{id}:
  *   put:
- *     summary: Update an existing weather record
- *     description: Allows updating temperature, description, humidity, or wind speed of a stored weather record
+ *     summary: Update a weather record
+ *     tags: [Weather]
+ *     description: Update temperature, description, humidity, or wind speed of a weather record
  *     security:
  *       - BearerAuth: []
  *     parameters:
- *       - name: id
- *         in: path
+ *       - in: path
+ *         name: id
  *         required: true
- *         description: Weather record ID
  *         schema:
  *           type: string
+ *         description: Weather record ID
  *     requestBody:
  *       required: true
  *       content:
@@ -132,63 +149,73 @@ router.post("/weather", authenticateToken, fetchWeather); // Protected
  *     responses:
  *       200:
  *         description: Successfully updated weather record
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Weather'
+ *       401:
+ *         description: Unauthorized
  *       404:
  *         description: Weather record not found
  *       500:
  *         description: Internal server error
  */
-router.put("/weather/:id", authenticateToken, updateWeather); // Protected
+router.put("/weather/:id", authenticateToken, updateWeather);
 
 /**
  * @swagger
  * /api/weather/{id}:
  *   delete:
  *     summary: Delete a weather record
- *     description: Removes a specific weather record from the database
+ *     tags: [Weather]
+ *     description: Permanently remove a weather record from the database
  *     security:
  *       - BearerAuth: []
  *     parameters:
- *       - name: id
- *         in: path
+ *       - in: path
+ *         name: id
  *         required: true
- *         description: Weather record ID
  *         schema:
  *           type: string
+ *         description: Weather record ID
  *     responses:
- *       200:
+ *       204:
  *         description: Successfully deleted weather record
+ *       401:
+ *         description: Unauthorized
  *       404:
  *         description: Weather record not found
  *       500:
  *         description: Internal server error
  */
-router.delete("/weather/:id", authenticateToken, deleteWeather); // Protected
+router.delete("/weather/:id", authenticateToken, deleteWeather);
 
 /**
  * @swagger
  * /api/weather/latest/{cityName}:
  *   get:
- *     summary: Get the latest weather for a city
+ *     summary: Get latest weather for a city
+ *     tags: [Weather]
  *     description: Retrieve the most recent weather data for a specific city
  *     parameters:
- *       - name: cityName
- *         in: path
+ *       - in: path
+ *         name: cityName
  *         required: true
- *         description: Name of the city
  *         schema:
  *           type: string
+ *         description: City name
  *     responses:
  *       200:
- *         description: Successfully retrieved latest weather record
+ *         description: Latest weather record
  *         content:
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/Weather'
  *       404:
- *         description: No weather data found for this city
+ *         description: No weather data found
  *       500:
  *         description: Internal server error
  */
-router.get("/weather/latest/:cityName", getLatestWeather); // Public
+router.get("/weather/latest/:cityName", getLatestWeather);
 
 export default router;
